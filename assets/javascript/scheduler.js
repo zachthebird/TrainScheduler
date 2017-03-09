@@ -42,7 +42,7 @@ $(document).on('click', '#submit', function(){
 
 firebase.database().ref().on('child_added', function(snap){
 
-	$('table').append(
+	$('tbody').append(
 		'</tr><tr><td>'+snap.val().trainName+'</td>'+
 		'<td>'+snap.val().destination+'</td>'+
 		'<td>'+snap.val().frequency+'</td></tr>');
