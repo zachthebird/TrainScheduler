@@ -42,8 +42,10 @@ $(document).on('ready', function(){
 			firstTrainTime: firstTrainTime,
 			frequency: frequency,
 			usersCurrentTime: currentTime,
+			usersMinutesUntilTrain: tMinutesTillTrain,
+			usersNextTrainTime: nextTrain
 		});
-		
+
 		$('#trainNameInput').val('');
 		$('#destinationInput').val('');
 		$('#firstTrainTimeInput').val('');
@@ -58,8 +60,8 @@ $(document).on('ready', function(){
 			'<td>'+snap.val().destination+'</td>'+
 			'<td>'+snap.val().firstTrainTime+'</td>'+
 			'<td>'+snap.val().frequency+'</td>'+
-			'<td>'+nextTrain+'</td>'+
-			'<td>'+tMinutesTillTrain+'</td></tr>'
+			'<td>'+snap.val().usersNextTrainTime+'</td>'+
+			'<td>'+snap.val().usersMinutesUntilTrain+'</td></tr>'
 		);		
 	})
 })
