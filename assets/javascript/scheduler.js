@@ -1,14 +1,4 @@
 $(document).on('ready', function(){
-// Initialize Firebase
-	var config = {
-	apiKey: "AIzaSyCiA70aYjLH8jy7eh-0DCg2vk5j5y8RnCU",
-	authDomain: "zbirds-1st-project.firebaseapp.com",
-	databaseURL: "https://zbirds-1st-project.firebaseio.com",
-	storageBucket: "zbirds-1st-project.appspot.com",
-	messagingSenderId: "642238249348"
-	};
-
-	firebase.initializeApp(config);
 
 	var database = firebase.database
 	var trainName;
@@ -22,6 +12,21 @@ $(document).on('ready', function(){
 	var tRemainder;
 	var tMinutesTillTrain;
 	var nextTrain;
+	var trainNameHtml;
+	var destinationHtml;
+	var firstTrainTimeHtml;
+	var frequencyHtml;
+	var usersNextTrainTimeHtml;
+
+	var config = {
+		apiKey: "AIzaSyCiA70aYjLH8jy7eh-0DCg2vk5j5y8RnCU",
+		authDomain: "zbirds-1st-project.firebaseapp.com",
+		databaseURL: "https://zbirds-1st-project.firebaseio.com",
+		storageBucket: "zbirds-1st-project.appspot.com",
+		messagingSenderId: "642238249348"
+	};
+
+	firebase.initializeApp(config);
 
 	$(document).on('click', '#submit', function(){
 
@@ -30,20 +35,19 @@ $(document).on('ready', function(){
 		frequency = $('#frequencyInput').val().trim();
 		firstTrainTime = $('#firstTrainTimeInput').val().trim();
 		firstTrainTimeConverted = moment(firstTrainTime, "hh:mm").subtract(1, "years");
-		currentTime = moment().format("dddd, MMMM Do YYYY, h:mm a");
-		diffTime = moment().diff(moment(firstTrainTimeConverted), "minutes");
-		tRemainder = diffTime % frequency;
-		tMinutesTillTrain = frequency - tRemainder;
-		nextTrain = moment().add(tMinutesTillTrain, "minutes").format("hh:mm a");
+
+		// currentTime = moment().format("dddd, MMMM Do YYYY, h:mm a");
+		// diffTime = moment().diff(moment(firstTrainTimeConverted), "minutes");
+		// tRemainder = diffTime % frequency;
+		// tMinutesTillTrain = frequency - tRemainder;
+		// nextTrain = moment().add(tMinutesTillTrain, "minutes").format("hh:mm a");
 
 		firebase.database().ref().push({
 			trainName: trainName,
 			destination: destination,
 			firstTrainTime: firstTrainTime,
 			frequency: frequency,
-			usersCurrentTime: currentTime,
-			usersMinutesUntilTrain: tMinutesTillTrain,
-			usersNextTrainTime: nextTrain
+			nTime: nextTrain
 		});
 
 		$('#trainNameInput').val('');
@@ -51,17 +55,30 @@ $(document).on('ready', function(){
 		$('#firstTrainTimeInput').val('');
 		$('#frequencyInput').val('');
 		$('#firstTrainTime').val('');
-	})
+	})	
 
-	firebase.database().ref().on('child_added', function(snap){
+	firebase.database().ref().on('child_added', function(snap, childKey){
+		
+		currentTime = moment().format("dddd, MMMM Do YYYY, h:mm a");
+		diffTime = moment().diff(moment(firstTrainTimeConverted), "minutes");
+		tRemainder = diffTime % frequency;
+		tMinutesTillTrain = frequency - tRemainder;
+		nextTrain = moment().add(tMinutesTillTrain, "minutes").format("hh:mm a")
+
+		trainNameHtml = '<tr><td>'+snap.val().trainName+'</td>'
+		destinationHtml = '<td>'+snap.val().destination+'</td>'
+		firstTrainTimeHtml = '<td>'+snap.val().firstTrainTime+'</td>'
+		frequencyHtml = '<td>'+snap.val().frequency+'</td>'
+		usersNextTrainTimeHtml = '<td>'+nextTrain+'</td>'
+		// var usersMinutesUntilTrainHtml = '<td>'+snap.val().usersMinutesUntilTrain+'</td></tr>'
 
 		$('tbody').append(
-			'<tr><td>'+snap.val().trainName+'</td>'+
-			'<td>'+snap.val().destination+'</td>'+
-			'<td>'+snap.val().firstTrainTime+'</td>'+
-			'<td>'+snap.val().frequency+'</td>'+
-			'<td>'+snap.val().usersNextTrainTime+'</td>'+
-			'<td>'+snap.val().usersMinutesUntilTrain+'</td></tr>'
+			trainNameHtml +
+			destinationHtml+
+			firstTrainTimeHtml+
+			frequencyHtml+
+			usersNextTrainTimeHtml
+			// usersMinutesUntilTrainHtml
 		);		
 	})
 })
